@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Alquiler Vehiculos</string>
+    <string name="login">LOG IN</string>
+    <string name="signup">SIGN UP</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="rep_password">Repeat Password</string>
+    <string name="cancel">Cancel</string>
+</resources>
