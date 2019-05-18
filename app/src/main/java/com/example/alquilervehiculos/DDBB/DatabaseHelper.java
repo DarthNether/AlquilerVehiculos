@@ -16,10 +16,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Table names
     public static final String TABLE_USERS = "users";
-    private static final String TABLE_VEHICLES = "vehicles";
+    public static final String TABLE_VEHICLES = "vehicles";
 
     //Common column names
-    private static final String KEY_ID = "id";
+    public static final String KEY_ID = "id";
     public static final String COLUMN_STATUS = "status";
     public static final String COLUMN_CREATED_AT = "created_at";
 
@@ -28,11 +28,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PASSWORD = "password";
 
     //VEHICLES table column names
-    private static final String COLUMN_ENROLLMENT = "enrollment";
-    private static final String COLUMN_BRAND = "brand";
-    private static final String COLUMN_MODEL = "model";
-    private static final String COLUMN_PRICE_PER_DAY = "price_day";
-    private static final String COLUMN_RENTED = "rented";
+    public static final String COLUMN_ENROLLMENT = "enrollment";
+    public static final String COLUMN_BRAND = "brand";
+    public static final String COLUMN_MODEL = "model";
+    public static final String COLUMN_PRICE_PER_DAY = "price_day";
+    public static final String COLUMN_RENTED = "rented";
 
     //Table create statements
     //USER table create statement
@@ -56,6 +56,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_RENTED + " INTEGER,"
             + COLUMN_STATUS + " DATETIME"
             + ")";
+
+    //VEHICLES TABLE default INSERTS
+
 
     private static DatabaseHelper instance;
 
