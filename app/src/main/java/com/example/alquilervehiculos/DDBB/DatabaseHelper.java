@@ -54,7 +54,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_MODEL + " TEXT,"
             + COLUMN_PRICE_PER_DAY + " DOUBLE,"
             + COLUMN_RENTED + " INTEGER,"
-            + COLUMN_STATUS + " DATETIME"
+            + COLUMN_STATUS + " INTEGER,"
+            + COLUMN_CREATED_AT + " DATETIME"
             + ")";
 
     //VEHICLES TABLE default INSERTS

@@ -20,15 +20,27 @@ public class ActivitySignUp extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         userDAO = new UserDAO(getApplicationContext());
+
+        bindEvents();
     }
 
-    public void cancelOnClick(View v) {
+    private void bindEvents() {
+        findViewById(R.id.btnCancel).setOnClickListener(
+                (View v) -> cancelOnClickEvent()
+        );
+
+        findViewById(R.id.btnSignUp).setOnClickListener(
+                (View v) -> signupOnClickEvent()
+        );
+    }
+
+    public void cancelOnClickEvent() {
         this.finish();
     }
 
-    public void signupOnClick(View v) {
-        EditText txtUser = findViewById(R.id.txtUsernameLayout);
-        EditText txtPassword = findViewById(R.id.txtPasswordLayout);
+    public void signupOnClickEvent() {
+        EditText txtUser = findViewById(R.id.txtUsername);
+        EditText txtPassword = findViewById(R.id.txtPassword);
         EditText txtRepeatPassword = findViewById(R.id.txtRepeatPassword);
 
         if (!txtUser.getText().toString().equals("") && !txtPassword.getText().toString().equals("") && !txtRepeatPassword.getText().toString().equals("")) {
