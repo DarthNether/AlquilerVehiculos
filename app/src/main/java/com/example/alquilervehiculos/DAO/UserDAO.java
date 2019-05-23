@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.example.alquilervehiculos.Classes.Utils.DateUtils;
 import com.example.alquilervehiculos.DDBB.DatabaseHelper;
@@ -14,7 +13,6 @@ import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_CREATED_A
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_PASSWORD;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_STATUS;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_USERNAME;
-import static com.example.alquilervehiculos.DDBB.DatabaseHelper.LOG;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.TABLE_USERS;
 
 public class UserDAO {
@@ -40,10 +38,11 @@ public class UserDAO {
 
     public LoginUserDTO retrieveUser(String username) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + " LIKE '" + username + "'";
-        Log.e(LOG, query);
 
-        Cursor c = db.rawQuery(query, null);
+        String selection = COLUMN_USERNAME + " = ?";
+        String[] selectionArgs = {username};
+
+        Cursor c = db.query(TABLE_USERS, null, selection, selectionArgs, null, null, null);
 
         LoginUserDTO u = new LoginUserDTO();
 

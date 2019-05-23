@@ -10,24 +10,28 @@ import com.example.alquilervehiculos.DAO.VehicleDAO;
 import com.example.alquilervehiculos.DTO.RecyclerVehicleDTO;
 import com.example.alquilervehiculos.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityVehicles extends AppCompatActivity {
     RecyclerView recyclerView;
-
+    VehiclesAdapter adapter;
     VehicleDAO dao;
+    List<RecyclerVehicleDTO> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicles);
+        dao = new VehicleDAO(getApplicationContext());
 
         recyclerView = findViewById(R.id.recViewVehicles);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
 
-        dao = new VehicleDAO(getApplicationContext());
+        adapter = new VehiclesAdapter();
+        getVehicleData();
+        recyclerView.setAdapter(adapter);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         getVehicleData();
     }
 
@@ -44,7 +48,8 @@ public class ActivityVehicles extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<RecyclerVehicleDTO> recyclerVehicleDTOS) {
-            recyclerView.setAdapter(new VehiclesAdapter(new ArrayList<RecyclerVehicleDTO>()));
+            adapter.setDtos(recyclerVehicleDTOS);
+            adapter.notifyDataSetChanged();
         }
     }
 }

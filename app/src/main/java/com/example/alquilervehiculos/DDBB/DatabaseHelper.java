@@ -1,8 +1,11 @@
 package com.example.alquilervehiculos.DDBB;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.alquilervehiculos.Classes.Utils.DateUtils;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     // Database Log
@@ -79,6 +82,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_TABLE_USERS);
         sqLiteDatabase.execSQL(CREATE_TABLE_VEHICLES);
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_ENROLLMENT, "0572JKL");
+        values.put(COLUMN_BRAND, "Opel");
+        values.put(COLUMN_MODEL, "Astra");
+        values.put(COLUMN_PRICE_PER_DAY, "50");
+        values.put(COLUMN_STATUS, "0");
+        values.put(COLUMN_CREATED_AT, DateUtils.getDateTime());
+
+        sqLiteDatabase.insert(TABLE_VEHICLES, null, values);
     }
 
     @Override
