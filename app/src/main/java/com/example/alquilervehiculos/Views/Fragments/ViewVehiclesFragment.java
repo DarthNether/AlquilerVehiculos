@@ -41,7 +41,7 @@ public class ViewVehiclesFragment extends Fragment {
     RecyclerView recyclerVehicles;
     VehiclesAdapter adapter;
     VehicleDAO dao;
-    List<RecyclerVehicleDTO> list;
+    MyTask task;
 
     public ViewVehiclesFragment() {
         // Required empty public constructor
@@ -115,6 +115,7 @@ public class ViewVehiclesFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        task.cancel(true);
     }
 
     /**
@@ -133,7 +134,8 @@ public class ViewVehiclesFragment extends Fragment {
     }
 
     private void getVehicleData() {
-        new MyTask().execute();
+        task = new MyTask();
+        task.execute();
     }
 
     private class MyTask extends AsyncTask<Void, Void, List<RecyclerVehicleDTO>> {
