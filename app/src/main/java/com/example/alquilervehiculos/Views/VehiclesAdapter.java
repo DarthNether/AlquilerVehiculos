@@ -20,7 +20,7 @@ public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.Vehicl
         return dtos;
     }
 
-    void setDtos(List<RecyclerVehicleDTO> dtos) {
+    public void setDtos(List<RecyclerVehicleDTO> dtos) {
         this.dtos = dtos;
     }
 

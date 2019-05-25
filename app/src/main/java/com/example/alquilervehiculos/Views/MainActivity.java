@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(LoginUserDTO u) {
             if (u.getPassword() != null ) {
                 if (u.getPassword().equals(txtPassword.getText().toString())) {
-                    Intent i = new Intent(MainActivity.this, ActivityVehicles.class);
+                    Intent i = new Intent(MainActivity.this, MainScreenActivity.class);
                     startActivity(i);
 
                     txtUsername.setText(null);
