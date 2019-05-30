@@ -25,11 +25,11 @@ public class ActivitySignUp extends AppCompatActivity {
     }
 
     private void bindEvents() {
-        findViewById(R.id.btnCancel).setOnClickListener(
+        findViewById(R.id.btn_cancel).setOnClickListener(
                 (View v) -> cancelOnClickEvent()
         );
 
-        findViewById(R.id.btnSignUp).setOnClickListener(
+        findViewById(R.id.btn_save).setOnClickListener(
                 (View v) -> signupOnClickEvent()
         );
     }

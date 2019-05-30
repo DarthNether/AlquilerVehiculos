@@ -2,14 +2,21 @@ package com.example.alquilervehiculos.Views.Fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
+import com.example.alquilervehiculos.DAO.VehicleDAO;
 import com.example.alquilervehiculos.R;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +37,15 @@ public class NewVehicleFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private Button btnSave;
+    private Button btnCancel;
+    private EditText txtBrand;
+    private EditText txtModel;
+    private EditText txtEnrollment;
+    private EditText txtPrice;
+
+    VehicleDAO dao;
 
     public NewVehicleFragment() {
         // Required empty public constructor
@@ -69,9 +85,50 @@ public class NewVehicleFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_new_vehicle, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onSaveButtonPressed() {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        btnSave = view.findViewById(R.id.btn_save);
+        btnCancel = view.findViewById(R.id.btn_cancel);
+        txtEnrollment = view.findViewById(R.id.txt_enrollment);
+        txtBrand = view.findViewById(R.id.txt_brand);
+        txtModel = view.findViewById(R.id.txt_model);
+        txtPrice = view.findViewById(R.id.txt_price);
 
+        dao = new VehicleDAO(view.getContext());
+
+        btnSave.setOnClickListener(this::onSaveButtonPressed);
+        btnCancel.setOnClickListener(v -> onCancelButtonPressed());
+    }
+
+    public void onSaveButtonPressed(View v) {
+        String[] data = new String[4];
+
+        if (txtBrand.getText().toString().isEmpty()) {
+            txtBrand.setError("This field must not be empty");
+        } else if (txtModel.getText().toString().isEmpty()) {
+            txtModel.setError("This field must not be empty");
+        } else if (txtEnrollment.getText().toString().isEmpty()) {
+            txtEnrollment.setError("This field must not be empty");
+        } else if (txtPrice.getText().toString().isEmpty()) {
+            txtPrice.setError("This field must not be empty");
+        } else if (!txtEnrollment.getText().toString().matches("(\\d{4})([A-Z]{3})")
+                && !txtEnrollment.getText().toString().matches("([A-Z]{1,2})(\\d{4})([A-Z]{0,2})")) {
+            txtEnrollment.setError("Not a valid enrollment");
+        } else if (!txtPrice.getText().toString().matches("(\\d+\\.\\d{1,2})")) {
+            txtPrice.setError("Not a valid price");
+        } else {
+            data[0] = txtBrand.getText().toString();
+            data[1] = txtModel.getText().toString();
+            data[2] = txtEnrollment.getText().toString();
+            data[3] = txtPrice.getText().toString();
+
+            new SaveVehicleTask().execute(data);
+        }
+
+    }
+
+    public void onCancelButtonPressed() {
+        Objects.requireNonNull(this.getActivity()).onBackPressed();
     }
 
     @Override
@@ -110,5 +167,17 @@ public class NewVehicleFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-//    private static class SaveClientTask extends AsyncTask<>
+    private class SaveVehicleTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            dao.SaveVehicle(strings[0], strings[1], strings[2], strings[3]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Objects.requireNonNull(NewVehicleFragment.this.getActivity()).onBackPressed();
+        }
+    }
 }

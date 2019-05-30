@@ -33,6 +33,8 @@ public class MainViewActivity extends AppCompatActivity
     FragmentManager fragmentManager;
     NavigationView navigationView;
 
+    FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,7 @@ public class MainViewActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener((View v) -> onFabClick());
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -66,8 +68,7 @@ public class MainViewActivity extends AppCompatActivity
 
         if (currentFragment instanceof ViewClientsFragment) {
 
-        }
-        else if (currentFragment instanceof ViewVehiclesFragment) {
+        } else if (currentFragment instanceof ViewVehiclesFragment) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.dynamic_fragment_layout, new NewVehicleFragment(), "FRAGMENT_NEW_VEHICLE");
             fragmentTransaction.addToBackStack(null);
@@ -78,8 +79,18 @@ public class MainViewActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        Fragment currentFragment = this.fragmentManager.findFragmentById(R.id.dynamic_fragment_layout);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (currentFragment instanceof NewVehicleFragment) {
+            super.onBackPressed();
+
+            currentFragment = this.fragmentManager.findFragmentById(R.id.dynamic_fragment_layout);
+
+            if (currentFragment instanceof ViewVehiclesFragment) {
+                ((ViewVehiclesFragment) currentFragment).getVehiclesData();
+            }
         } else {
             super.onBackPressed();
         }
@@ -115,7 +126,7 @@ public class MainViewActivity extends AppCompatActivity
         Fragment currentFragment = this.fragmentManager.findFragmentById(R.id.dynamic_fragment_layout);
 
         if (id == R.id.nav_vehicles) {
-            if (!(currentFragment instanceof  ViewVehiclesFragment)) {
+            if (!(currentFragment instanceof ViewVehiclesFragment)) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.dynamic_fragment_layout, new ViewVehiclesFragment(), "FRAGMENT_VEHICLES");
                 fragmentTransaction.commit();
@@ -123,7 +134,7 @@ public class MainViewActivity extends AppCompatActivity
                 Objects.requireNonNull(getSupportActionBar()).setTitle("Vehicles");
             }
         } else if (id == R.id.nav_clients) {
-            if (!(currentFragment instanceof  ViewClientsFragment)) {
+            if (!(currentFragment instanceof ViewClientsFragment)) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.dynamic_fragment_layout, new ViewClientsFragment(), "FRAGMENT_CLIENTS");
                 fragmentTransaction.commit();
@@ -139,13 +150,13 @@ public class MainViewActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        if (fragment instanceof NewVehicleFragment) {
-            NewVehicleFragment newVehicleFragment = (NewVehicleFragment) fragment;
-            newVehicleFragment.setmListener(this);
-        }
-    }
+//    @Override
+//    public void onAttachFragment(Fragment fragment) {
+//        if (fragment instanceof NewVehicleFragment) {
+//            NewVehicleFragment newVehicleFragment = (NewVehicleFragment) fragment;
+//            newVehicleFragment.setmListener(this);
+//        }
+//    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {

@@ -1,9 +1,11 @@
 package com.example.alquilervehiculos.DAO;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.alquilervehiculos.Classes.Utils.DateUtils;
 import com.example.alquilervehiculos.DDBB.DatabaseHelper;
 import com.example.alquilervehiculos.DTO.RecyclerVehicleDTO;
 
@@ -11,8 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_BRAND;
+import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_CREATED_AT;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_ENROLLMENT;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_MODEL;
+import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_PRICE_PER_DAY;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_STATUS;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.TABLE_VEHICLES;
 
@@ -50,5 +54,19 @@ public class VehicleDAO {
         c.close();
 
         return dtos;
+    }
+
+    public void SaveVehicle(String brand, String model, String enrollment, String price) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_ENROLLMENT, enrollment);
+        values.put(COLUMN_BRAND, brand);
+        values.put(COLUMN_MODEL, model);
+        values.put(COLUMN_PRICE_PER_DAY, price);
+        values.put(COLUMN_STATUS, "0");
+        values.put(COLUMN_CREATED_AT, DateUtils.getDateTime());
+
+        db.insert(TABLE_VEHICLES, null, values);
     }
 }

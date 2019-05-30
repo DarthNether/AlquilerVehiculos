@@ -41,6 +41,11 @@ public class ViewVehiclesFragment extends Fragment {
 
     RecyclerView recyclerVehicles;
     VehiclesAdapter adapter;
+
+    public VehiclesAdapter getAdapter() {
+        return adapter;
+    }
+
     VehicleDAO dao;
     MyTask task;
 
@@ -134,7 +139,7 @@ public class ViewVehiclesFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private void getVehiclesData() {
+    public void getVehiclesData() {
         task = new MyTask();
         task.execute();
     }

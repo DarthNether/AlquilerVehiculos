@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
                 (View v) -> loginOnClickEvent()
         );
 
-        findViewById(R.id.btnSignUp).setOnClickListener(
+        findViewById(R.id.btn_save).setOnClickListener(
                 (View v) -> signupOnClickEvent()
         );
     }
