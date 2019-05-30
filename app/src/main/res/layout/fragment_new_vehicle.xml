@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Views.ActivitySignUp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Views.Fragments.NewVehicleFragment">
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/txtUsernameLayout"
+        android:id="@+id/txt_brand_layout"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,16 +20,17 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/txtUsername"
+            android:id="@+id/txt_brand"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ems="10"
-            android:hint="@string/username"
-            android:inputType="textPersonName" />
+            android:hint="@string/brand"
+            android:inputType="textPersonName"/>
+
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/txtPasswordLayout"
+        android:id="@+id/txt_model_layout"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -39,19 +40,20 @@
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtUsernameLayout">
+        app:layout_constraintTop_toBottomOf="@+id/txt_brand_layout">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/txtPassword"
+            android:id="@+id/txt_model"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ems="10"
-            android:hint="@string/password"
-            android:inputType="textPassword" />
+            android:hint="@string/model"
+            android:inputType="textPersonName"/>
+
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/txtRepeatPasswordLayout"
+        android:id="@+id/txt_enrollment_layout"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -61,15 +63,39 @@
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPasswordLayout">
+        app:layout_constraintTop_toBottomOf="@+id/txt_model_layout">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/txtRepeatPassword"
+            android:id="@+id/txt_enrollment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ems="10"
-            android:hint="@string/rep_password"
-            android:inputType="textPassword" />
+            android:hint="@string/enrollment"
+            android:inputType="text"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/txt_price_layout"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_enrollment_layout">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/txt_price"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:hint="@string/price_per_day"
+            android:inputType="numberDecimal"/>
+
     </android.support.design.widget.TextInputLayout>
 
     <Button
@@ -81,7 +107,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="88dp"
-        android:text="@string/sign_up"
+        android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnCancel"
         app:layout_constraintHorizontal_bias="0.055"
@@ -97,4 +123,5 @@
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
