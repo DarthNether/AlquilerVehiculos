@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Table names
     public static final String TABLE_USERS = "users";
     public static final String TABLE_VEHICLES = "vehicles";
+    public static final String TABLE_CLIENTS = "clients";
 
     //Common column names
     public static final String KEY_ID = "id";
@@ -37,6 +38,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PRICE_PER_DAY = "price_day";
     public static final String COLUMN_RENTED = "rented";
 
+    //CLIENTS table column names
+    public static final String COLUMN_PERSONAL_ID = "personal_id";
+    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_MIDDLE_NAME = "middle_name";
+    public static final String COLUMN_SURNAME = "surname";
+    public static final String COLUMN_PHONE_NUMBER = "phone_number";
+    public static final String COLUMN_EMAIL = "email";
+
     //Table create statements
     //USER table create statement
     private static final String CREATE_TABLE_USERS = "CREATE TABLE "
@@ -48,7 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_CREATED_AT + " DATETIME"
             + ")";
 
-    //VEHICLE table crate statement
+    //VEHICLE table create statement
     private static final String CREATE_TABLE_VEHICLES = "CREATE TABLE "
             + TABLE_VEHICLES + " ("
             + KEY_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
@@ -61,8 +70,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_CREATED_AT + " DATETIME"
             + ")";
 
-    //VEHICLES TABLE default INSERTS
-
+    //CLIENTS table create statement
+    private static final String CREATE_TABLE_CLIENTS = "CREATE TABLE "
+            + TABLE_CLIENTS + " ("
+            + KEY_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            + COLUMN_PERSONAL_ID + " TEXT,"
+            + COLUMN_NAME + " TEXT,"
+            + COLUMN_MIDDLE_NAME + " TEXT,"
+            + COLUMN_SURNAME + " TEXT,"
+            + COLUMN_PHONE_NUMBER + " TEXT,"
+            + COLUMN_EMAIL + " TEXT,"
+            + COLUMN_STATUS + " INTEGER,"
+            + COLUMN_CREATED_AT + " DATETIME"
+            + ")";
 
     private static DatabaseHelper instance;
 
@@ -82,7 +102,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_TABLE_USERS);
         sqLiteDatabase.execSQL(CREATE_TABLE_VEHICLES);
+        sqLiteDatabase.execSQL(CREATE_TABLE_CLIENTS);
 
+        //Default insert VEHICLES
         ContentValues values = new ContentValues();
         values.put(COLUMN_ENROLLMENT, "0572JKL");
         values.put(COLUMN_BRAND, "Opel");
@@ -92,11 +114,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_CREATED_AT, DateUtils.getDateTime());
 
         sqLiteDatabase.insert(TABLE_VEHICLES, null, values);
+
+        //Default insert CLIENTS
+        values = new ContentValues();
+        values.put(COLUMN_PERSONAL_ID, "98767645K");
+        values.put(COLUMN_NAME, "Homer");
+        values.put(COLUMN_MIDDLE_NAME, "Jay");
+        values.put(COLUMN_SURNAME, "Simpson");
+        values.put(COLUMN_PHONE_NUMBER, "777555999");
+        values.put(COLUMN_EMAIL, "homer@springfield.com");
+        values.put(COLUMN_STATUS, "0");
+        values.put(COLUMN_CREATED_AT, DateUtils.getDateTime());
+
+        sqLiteDatabase.insert(TABLE_CLIENTS, null, values);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_VEHICLES);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CLIENTS);
         onCreate(sqLiteDatabase);
     }
 }

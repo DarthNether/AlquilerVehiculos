@@ -12,22 +12,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.alquilervehiculos.DAO.VehicleDAO;
-import com.example.alquilervehiculos.DTO.RecyclerVehicleDTO;
+import com.example.alquilervehiculos.DAO.ClientDAO;
+import com.example.alquilervehiculos.DTO.RecyclerClientDTO;
 import com.example.alquilervehiculos.R;
-import com.example.alquilervehiculos.Views.VehiclesAdapter;
+import com.example.alquilervehiculos.Views.ClientsAdapter;
 
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ViewVehiclesFragment.OnFragmentInteractionListener} interface
+ * {@link ViewClientsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ViewVehiclesFragment#newInstance} factory method to
+ * Use the {@link ViewClientsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ViewVehiclesFragment extends Fragment {
+public class ViewClientsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -39,12 +39,12 @@ public class ViewVehiclesFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    RecyclerView recyclerVehicles;
-    VehiclesAdapter adapter;
-    VehicleDAO dao;
+    RecyclerView recyclerClients;
+    ClientsAdapter adapter;
+    ClientDAO dao;
     MyTask task;
 
-    public ViewVehiclesFragment() {
+    public ViewClientsFragment() {
         // Required empty public constructor
     }
 
@@ -54,11 +54,11 @@ public class ViewVehiclesFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ViewVehiclesFragment.
+     * @return A new instance of fragment ViewClientsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ViewVehiclesFragment newInstance(String param1, String param2) {
-        ViewVehiclesFragment fragment = new ViewVehiclesFragment();
+    public static ViewClientsFragment newInstance(String param1, String param2) {
+        ViewClientsFragment fragment = new ViewClientsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -78,18 +78,17 @@ public class ViewVehiclesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_view_vehicles, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_clients, container, false);
 
-        recyclerVehicles = view.findViewById(R.id.recViewVehicles);
+        recyclerClients = view.findViewById(R.id.recViewClients);
 
-        dao = new VehicleDAO(getContext());
+        dao = new ClientDAO(getContext());
 
-        adapter = new VehiclesAdapter();
-        getVehiclesData();
-        recyclerVehicles.setAdapter(adapter);
+        adapter = new ClientsAdapter();
+        getClientsData();
+        recyclerClients.setAdapter(adapter);
 
-        recyclerVehicles.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerClients.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return view;
     }
@@ -116,7 +115,6 @@ public class ViewVehiclesFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        task.cancel(true);
     }
 
     /**
@@ -134,21 +132,22 @@ public class ViewVehiclesFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private void getVehiclesData() {
+    private void getClientsData() {
         task = new MyTask();
         task.execute();
     }
 
-    private class MyTask extends AsyncTask<Void, Void, List<RecyclerVehicleDTO>> {
+    private class MyTask extends AsyncTask<Void, Void, List<RecyclerClientDTO>> {
+
 
         @Override
-        protected List<RecyclerVehicleDTO> doInBackground(Void... voids) {
-            return dao.getAllVehicles();
+        protected List<RecyclerClientDTO> doInBackground(Void... voids) {
+            return dao.getAllClients();
         }
 
         @Override
-        protected void onPostExecute(List<RecyclerVehicleDTO> recyclerVehicleDTOS) {
-            adapter.setDtos(recyclerVehicleDTOS);
+        protected void onPostExecute(List<RecyclerClientDTO> recyclerClientDTOS) {
+            adapter.setDtos(recyclerClientDTOS);
             adapter.notifyDataSetChanged();
         }
     }
