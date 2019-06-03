@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.alquilervehiculos.DAO.VehicleDAO;
+import com.example.alquilervehiculos.DAO.ClientDAO;
 import com.example.alquilervehiculos.R;
 
 import java.util.Objects;
@@ -21,12 +21,12 @@ import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link NewVehicleFragment.OnFragmentInteractionListener} interface
+ * {@link NewClientFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link NewVehicleFragment#newInstance} factory method to
+ * Use the {@link NewClientFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NewVehicleFragment extends Fragment {
+public class NewClientFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -38,14 +38,16 @@ public class NewVehicleFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private EditText txtBrand;
-    private EditText txtModel;
-    private EditText txtEnrollment;
-    private EditText txtPrice;
+    ClientDAO dao;
 
-    VehicleDAO dao;
+    EditText txtName;
+    EditText txtMiddleName;
+    EditText txtSurname;
+    EditText txtId;
+    EditText txtPhone;
+    EditText txtEmail;
 
-    public NewVehicleFragment() {
+    public NewClientFragment() {
         // Required empty public constructor
     }
 
@@ -55,11 +57,11 @@ public class NewVehicleFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment NewVehicleFragment.
+     * @return A new instance of fragment NewClientFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NewVehicleFragment newInstance(String param1, String param2) {
-        NewVehicleFragment fragment = new NewVehicleFragment();
+    public static NewClientFragment newInstance(String param1, String param2) {
+        NewClientFragment fragment = new NewClientFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -80,49 +82,58 @@ public class NewVehicleFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_vehicle, container, false);
+        return inflater.inflate(R.layout.fragment_new_client, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Button btnSave = view.findViewById(R.id.btn_save);
         Button btnCancel = view.findViewById(R.id.btn_cancel);
-        txtEnrollment = view.findViewById(R.id.txt_enrollment);
-        txtBrand = view.findViewById(R.id.txt_brand);
-        txtModel = view.findViewById(R.id.txt_model);
-        txtPrice = view.findViewById(R.id.txt_price);
+        txtName = view.findViewById(R.id.txt_name);
+        txtSurname = view.findViewById(R.id.txt_surname);
+        txtMiddleName = view.findViewById(R.id.txt_middle_name);
+        txtEmail = view.findViewById(R.id.txt_email);
+        txtPhone = view.findViewById(R.id.txt_phone);
+        txtId = view.findViewById(R.id.txt_id);
 
-        dao = new VehicleDAO(view.getContext());
+        dao = new ClientDAO(view.getContext());
 
         btnSave.setOnClickListener(v -> onSaveButtonPressed());
         btnCancel.setOnClickListener(v -> onCancelButtonPressed());
     }
 
     public void onSaveButtonPressed() {
-        String[] data = new String[4];
+        String[] data = new String[6];
 
-        if (txtBrand.getText().toString().isEmpty()) {
-            txtBrand.setError("This field must not be empty");
-        } else if (txtModel.getText().toString().isEmpty()) {
-            txtModel.setError("This field must not be empty");
-        } else if (txtEnrollment.getText().toString().isEmpty()) {
-            txtEnrollment.setError("This field must not be empty");
-        } else if (txtPrice.getText().toString().isEmpty()) {
-            txtPrice.setError("This field must not be empty");
-        } else if (!txtEnrollment.getText().toString().matches("(\\d{4})([A-Z]{3})")
-                && !txtEnrollment.getText().toString().matches("([A-Z]{1,2})(\\d{4})([A-Z]{0,2})")) {
-            txtEnrollment.setError("Not a valid enrollment");
-        } else if (!txtPrice.getText().toString().matches("(\\d+\\.\\d{1,2})")) {
-            txtPrice.setError("Not a valid price");
+        if (txtName.getText().toString().isEmpty()) {
+            txtName.setError("This field must not be empty");
+        } else if (txtMiddleName.getText().toString().isEmpty()) {
+            txtMiddleName.setError("This field must not be empty");
+        } else if (txtSurname.getText().toString().isEmpty()) {
+            txtSurname.setError("This field must not be empty");
+        } else if (txtId.getText().toString().isEmpty()) {
+            txtId.setError("This field must not be empty");
+        } else if (txtPhone.getText().toString().isEmpty()) {
+            txtPhone.setError("This field must not be empty");
+        } else if (txtEmail.getText().toString().isEmpty()) {
+            txtEmail.setError("This field must not be empty");
+        } else if (!txtId.getText().toString().matches("[0-9]{7,8}[TRWAGMYFPDXBNJZSQVHLCKEtrwagmyfpdxbnjzsqvhlcke]")) {
+            txtId.setError("Not a valid Spanish ID");
+        } else if (!txtPhone.getText().toString().matches("^(\\+34|0034|34)?[6|7|8|9][0-9]{8}$")
+                && !txtPhone.getText().toString().matches("^(\\+34|0034|34)?[\\s|\\-|.]?[6|7|8|9][\\s|\\-|.]?([0-9][\\s|\\-|.]?){8}$")) {
+            txtPhone.setError("Not a valid phone number");
+        } else if (!txtEmail.getText().toString().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            txtEmail.setError("Not a valid email address");
         } else {
-            data[0] = txtBrand.getText().toString();
-            data[1] = txtModel.getText().toString();
-            data[2] = txtEnrollment.getText().toString();
-            data[3] = txtPrice.getText().toString();
+            data[0] = txtName.getText().toString();
+            data[1] = txtMiddleName.getText().toString();
+            data[2] = txtSurname.getText().toString();
+            data[3] = txtId.getText().toString();
+            data[4] = txtPhone.getText().toString();
+            data[5] = txtEmail.getText().toString();
 
-            new SaveVehicleTask().execute(data);
+            new SaveNewClient().execute(data);
         }
-
     }
 
     public void onCancelButtonPressed() {
@@ -146,10 +157,6 @@ public class NewVehicleFragment extends Fragment {
         mListener = null;
     }
 
-    public void setmListener(OnFragmentInteractionListener mListener) {
-        this.mListener = mListener;
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -165,17 +172,17 @@ public class NewVehicleFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private class SaveVehicleTask extends AsyncTask<String, Void, Void> {
+    public class SaveNewClient extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String... strings) {
-            dao.SaveVehicle(strings[0], strings[1], strings[2], strings[3]);
+            dao.saveClient(strings[0], strings[1], strings[2], strings[3], strings[4], strings[5]);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Objects.requireNonNull(NewVehicleFragment.this.getActivity()).onBackPressed();
+            Objects.requireNonNull(NewClientFragment.this.getActivity()).onBackPressed();
         }
     }
 }

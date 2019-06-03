@@ -132,7 +132,7 @@ public class ViewClientsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private void getClientsData() {
+    public void getClientsData() {
         task = new MyTask();
         task.execute();
     }

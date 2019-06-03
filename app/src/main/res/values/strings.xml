@@ -11,6 +11,8 @@
     <string name="model">Model</string>
     <string name="enrollment">Enrollment</string>
     <string name="price_per_day">Price / Day</string>
+    <string name="phone">Phone Number</string>
+    <string name="email">Email</string>
 
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>

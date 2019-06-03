@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.alquilervehiculos.R;
+import com.example.alquilervehiculos.Views.Fragments.NewClientFragment;
 import com.example.alquilervehiculos.Views.Fragments.NewVehicleFragment;
 import com.example.alquilervehiculos.Views.Fragments.ViewClientsFragment;
 import com.example.alquilervehiculos.Views.Fragments.ViewVehiclesFragment;
@@ -28,7 +29,8 @@ public class MainViewActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ViewVehiclesFragment.OnFragmentInteractionListener,
         ViewClientsFragment.OnFragmentInteractionListener,
-        NewVehicleFragment.OnFragmentInteractionListener {
+        NewVehicleFragment.OnFragmentInteractionListener,
+        NewClientFragment.OnFragmentInteractionListener {
 
     FragmentManager fragmentManager;
     NavigationView navigationView;
@@ -67,12 +69,19 @@ public class MainViewActivity extends AppCompatActivity
         Fragment currentFragment = this.fragmentManager.findFragmentById(R.id.dynamic_fragment_layout);
 
         if (currentFragment instanceof ViewClientsFragment) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.dynamic_fragment_layout, new NewClientFragment(), "FRAGMENT_NEW_CLIENT");
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
 
+            fab.hide();
         } else if (currentFragment instanceof ViewVehiclesFragment) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.dynamic_fragment_layout, new NewVehicleFragment(), "FRAGMENT_NEW_VEHICLE");
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
+
+            fab.hide();
         }
     }
 
@@ -90,6 +99,16 @@ public class MainViewActivity extends AppCompatActivity
 
             if (currentFragment instanceof ViewVehiclesFragment) {
                 ((ViewVehiclesFragment) currentFragment).getVehiclesData();
+            }
+
+            fab.show();
+        } else if (currentFragment instanceof NewClientFragment) {
+            super.onBackPressed();
+
+            currentFragment = this.fragmentManager.findFragmentById(R.id.dynamic_fragment_layout);
+
+            if (currentFragment instanceof ViewClientsFragment) {
+                ((ViewClientsFragment) currentFragment).getClientsData();
             }
         } else {
             super.onBackPressed();
@@ -149,14 +168,6 @@ public class MainViewActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-//    @Override
-//    public void onAttachFragment(Fragment fragment) {
-//        if (fragment instanceof NewVehicleFragment) {
-//            NewVehicleFragment newVehicleFragment = (NewVehicleFragment) fragment;
-//            newVehicleFragment.setmListener(this);
-//        }
-//    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
