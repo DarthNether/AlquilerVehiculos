@@ -33,4 +33,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+    <string name="snackbar_deleted_vehicle">1 Vehicle Deleted</string>
+    <string name="snackbar_undo">UNDO</string>
 </resources>

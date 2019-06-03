@@ -43,6 +43,10 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         return dtos.size();
     }
 
+    public RecyclerClientDTO getClient(int position) {
+        return this.dtos.get(position);
+    }
+
     static class ClientsViewHolder extends RecyclerView.ViewHolder {
         TextView name;
         TextView middleName;

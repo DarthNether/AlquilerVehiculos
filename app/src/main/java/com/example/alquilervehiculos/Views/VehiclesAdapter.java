@@ -43,6 +43,11 @@ public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.Vehicl
         return dtos.size();
     }
 
+
+    public RecyclerVehicleDTO getVehicle(int position) {
+        return dtos.get(position);
+    }
+
     static class VehiclesViewHolder extends RecyclerView.ViewHolder {
         TextView brand;
         TextView model;
@@ -62,4 +67,6 @@ public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.Vehicl
             enrollment.setText(data.getEnrollment());
         }
     }
+
+
 }

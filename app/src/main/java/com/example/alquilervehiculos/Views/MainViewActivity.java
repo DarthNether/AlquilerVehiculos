@@ -18,8 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.alquilervehiculos.R;
+import com.example.alquilervehiculos.Views.Fragments.ClientDetailsFragment;
 import com.example.alquilervehiculos.Views.Fragments.NewClientFragment;
 import com.example.alquilervehiculos.Views.Fragments.NewVehicleFragment;
+import com.example.alquilervehiculos.Views.Fragments.VehicleDetailsFragment;
 import com.example.alquilervehiculos.Views.Fragments.ViewClientsFragment;
 import com.example.alquilervehiculos.Views.Fragments.ViewVehiclesFragment;
 
@@ -30,9 +32,12 @@ public class MainViewActivity extends AppCompatActivity
         ViewVehiclesFragment.OnFragmentInteractionListener,
         ViewClientsFragment.OnFragmentInteractionListener,
         NewVehicleFragment.OnFragmentInteractionListener,
-        NewClientFragment.OnFragmentInteractionListener {
+        NewClientFragment.OnFragmentInteractionListener,
+        ClientDetailsFragment.OnFragmentInteractionListener,
+        VehicleDetailsFragment.OnFragmentInteractionListener {
 
-    FragmentManager fragmentManager;
+    public FragmentManager fragmentManager;
+
     NavigationView navigationView;
 
     FloatingActionButton fab;

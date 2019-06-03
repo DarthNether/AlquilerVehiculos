@@ -20,6 +20,7 @@ import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_PERSONAL_
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_PHONE_NUMBER;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_STATUS;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_SURNAME;
+import static com.example.alquilervehiculos.DDBB.DatabaseHelper.KEY_ID;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.TABLE_CLIENTS;
 
 public class ClientDAO {
@@ -32,7 +33,7 @@ public class ClientDAO {
 
     public List<RecyclerClientDTO> getAllClients() {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String[] columns = {COLUMN_NAME, COLUMN_MIDDLE_NAME, COLUMN_SURNAME, COLUMN_PERSONAL_ID};
+        String[] columns = {KEY_ID, COLUMN_NAME, COLUMN_MIDDLE_NAME, COLUMN_SURNAME, COLUMN_PERSONAL_ID};
         String selection = COLUMN_STATUS + " = ?";
         String[] selectionArgs = {"0"};
         String sortOrder = COLUMN_SURNAME + " DESC";
@@ -44,6 +45,7 @@ public class ClientDAO {
             while (!c.isAfterLast()) {
                 RecyclerClientDTO dto = new RecyclerClientDTO();
 
+                dto.setId(c.getString(c.getColumnIndex(KEY_ID)));
                 dto.setName(c.getString(c.getColumnIndex(COLUMN_NAME)));
                 dto.setMiddleName(c.getString(c.getColumnIndex(COLUMN_MIDDLE_NAME)));
                 dto.setSurname(c.getString(c.getColumnIndex(COLUMN_SURNAME)));
@@ -74,5 +76,29 @@ public class ClientDAO {
         values.put(COLUMN_CREATED_AT, DateUtils.getDateTime());
 
         db.insert(TABLE_CLIENTS, null, values);
+    }
+
+    public void removeClient(String id) {
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STATUS, 1);
+
+        String clause = KEY_ID + " =? ";
+        String[] args = {id};
+
+        database.update(TABLE_CLIENTS, values, clause, args);
+    }
+
+    public void restoreClient(String id) {
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STATUS, 0);
+
+        String clause = KEY_ID + " =? ";
+        String[] args = {id};
+
+        database.update(TABLE_CLIENTS, values, clause, args);
     }
 }

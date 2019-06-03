@@ -18,6 +18,7 @@ import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_ENROLLMEN
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_MODEL;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_PRICE_PER_DAY;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_STATUS;
+import static com.example.alquilervehiculos.DDBB.DatabaseHelper.KEY_ID;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.TABLE_VEHICLES;
 
 public class VehicleDAO {
@@ -29,7 +30,7 @@ public class VehicleDAO {
 
     public List<RecyclerVehicleDTO> getAllVehicles() {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String[] columns = {COLUMN_ENROLLMENT, COLUMN_BRAND, COLUMN_MODEL};
+        String[] columns = {KEY_ID, COLUMN_ENROLLMENT, COLUMN_BRAND, COLUMN_MODEL};
         String selection = COLUMN_STATUS + " = ?";
         String[] selectionArgs = { "0" };
 
@@ -41,6 +42,7 @@ public class VehicleDAO {
             while (!c.isAfterLast()) {
                 RecyclerVehicleDTO dto = new RecyclerVehicleDTO();
 
+                dto.setId(c.getString(c.getColumnIndex(KEY_ID)));
                 dto.setEnrollment(c.getString(c.getColumnIndex(COLUMN_ENROLLMENT)));
                 dto.setBrand(c.getString(c.getColumnIndex(COLUMN_BRAND)));
                 dto.setModel(c.getString(c.getColumnIndex(COLUMN_MODEL)));
@@ -56,7 +58,7 @@ public class VehicleDAO {
         return dtos;
     }
 
-    public void SaveVehicle(String brand, String model, String enrollment, String price) {
+    public void saveVehicle(String brand, String model, String enrollment, String price) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -68,5 +70,29 @@ public class VehicleDAO {
         values.put(COLUMN_CREATED_AT, DateUtils.getDateTime());
 
         db.insert(TABLE_VEHICLES, null, values);
+    }
+
+    public void removeVehicle(String id) {
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STATUS, 1);
+
+        String clause = KEY_ID + " =? ";
+        String[] args = {id};
+
+        database.update(TABLE_VEHICLES, values, clause, args);
+    }
+
+    public void restoreVehicle(String id) {
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STATUS, 0);
+
+        String clause = KEY_ID + " =? ";
+        String[] args = {id};
+
+        database.update(TABLE_VEHICLES, values, clause, args);
     }
 }

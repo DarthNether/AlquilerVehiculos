@@ -169,7 +169,7 @@ public class NewVehicleFragment extends Fragment {
 
         @Override
         protected Void doInBackground(String... strings) {
-            dao.SaveVehicle(strings[0], strings[1], strings[2], strings[3]);
+            dao.saveVehicle(strings[0], strings[1], strings[2], strings[3]);
             return null;
         }
 
