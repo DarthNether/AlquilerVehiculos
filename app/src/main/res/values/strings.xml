@@ -35,5 +35,6 @@
     <string name="menu_send">Send</string>
 
     <string name="snackbar_deleted_vehicle">1 Vehicle Deleted</string>
+    <string name="snackbar_deleted_client">1 Client Deleted</string>
     <string name="snackbar_undo">UNDO</string>
 </resources>

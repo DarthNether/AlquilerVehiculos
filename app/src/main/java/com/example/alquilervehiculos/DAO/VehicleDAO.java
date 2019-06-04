@@ -33,8 +33,9 @@ public class VehicleDAO {
         String[] columns = {KEY_ID, COLUMN_ENROLLMENT, COLUMN_BRAND, COLUMN_MODEL};
         String selection = COLUMN_STATUS + " = ?";
         String[] selectionArgs = { "0" };
+        String sortOrder = COLUMN_BRAND + " ASC";
 
-        Cursor c = db.query(TABLE_VEHICLES, columns, selection, selectionArgs, null, null, null);
+        Cursor c = db.query(TABLE_VEHICLES, columns, selection, selectionArgs, null, null, sortOrder);
 
         List<RecyclerVehicleDTO> dtos = new ArrayList<>();
 

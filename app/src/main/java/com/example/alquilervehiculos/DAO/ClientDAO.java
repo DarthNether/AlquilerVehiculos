@@ -36,7 +36,7 @@ public class ClientDAO {
         String[] columns = {KEY_ID, COLUMN_NAME, COLUMN_MIDDLE_NAME, COLUMN_SURNAME, COLUMN_PERSONAL_ID};
         String selection = COLUMN_STATUS + " = ?";
         String[] selectionArgs = {"0"};
-        String sortOrder = COLUMN_SURNAME + " DESC";
+        String sortOrder = COLUMN_SURNAME + " ASC";
 
         Cursor c = db.query(TABLE_CLIENTS, columns, selection, selectionArgs, null, null, sortOrder);
         List<RecyclerClientDTO> dtos = new ArrayList<>();

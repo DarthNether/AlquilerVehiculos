@@ -72,7 +72,7 @@ public class ViewClientsFragment extends Fragment {
             new GetClientsTask().execute();
             recentlyDeleted = clientDTO.getId();
 
-            Snackbar snackbar = Snackbar.make(getView(), R.string.snackbar_deleted_vehicle, Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(getView(), R.string.snackbar_deleted_client, Snackbar.LENGTH_LONG);
             snackbar.setAction(R.string.snackbar_undo, v -> undoDelete());
             snackbar.show();
         }
@@ -88,12 +88,7 @@ public class ViewClientsFragment extends Fragment {
             View itemView = viewHolder.itemView;
             int backgroundCornerOffset = 20;
 
-            if (dX > 0) { // Swiping to the right
-                background.setBounds(itemView.getLeft(), itemView.getTop(),
-                        itemView.getLeft() + ((int) dX) + backgroundCornerOffset,
-                        itemView.getBottom());
-
-            } else if (dX < 0) { // Swiping to the left
+            if (dX < 0) { // Swiping to the left
                 background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
                         itemView.getTop(), itemView.getRight(), itemView.getBottom());
             } else { // view is unSwiped
