@@ -19,6 +19,8 @@ import android.view.View;
 
 import com.example.alquilervehiculos.R;
 import com.example.alquilervehiculos.Views.Fragments.ClientDetailsFragment;
+import com.example.alquilervehiculos.Views.Fragments.EditClientFragment;
+import com.example.alquilervehiculos.Views.Fragments.EditVehicleFragment;
 import com.example.alquilervehiculos.Views.Fragments.NewClientFragment;
 import com.example.alquilervehiculos.Views.Fragments.NewVehicleFragment;
 import com.example.alquilervehiculos.Views.Fragments.VehicleDetailsFragment;
@@ -34,11 +36,14 @@ public class MainViewActivity extends AppCompatActivity
         NewVehicleFragment.OnFragmentInteractionListener,
         NewClientFragment.OnFragmentInteractionListener,
         ClientDetailsFragment.OnFragmentInteractionListener,
-        VehicleDetailsFragment.OnFragmentInteractionListener {
+        VehicleDetailsFragment.OnFragmentInteractionListener,
+        EditVehicleFragment.OnFragmentInteractionListener,
+        EditClientFragment.OnFragmentInteractionListener {
 
     public FragmentManager fragmentManager;
 
     NavigationView navigationView;
+    DrawerLayout drawer;
 
     FloatingActionButton fab;
 
@@ -87,12 +92,26 @@ public class MainViewActivity extends AppCompatActivity
             fragmentTransaction.commit();
 
             fab.hide();
+        } else if (currentFragment instanceof VehicleDetailsFragment) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.dynamic_fragment_layout, new EditVehicleFragment(), "FRAGMENT_EDIT_VEHICLE");
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+
+            fab.hide();
+        } else if (currentFragment instanceof ClientDetailsFragment) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.dynamic_fragment_layout, new EditClientFragment(), "FRAGMENT_EDIT_CLIENT");
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+
+            fab.hide();
         }
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         Fragment currentFragment = this.fragmentManager.findFragmentById(R.id.dynamic_fragment_layout);
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -106,6 +125,7 @@ public class MainViewActivity extends AppCompatActivity
                 ((ViewVehiclesFragment) currentFragment).getVehiclesData();
             }
 
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_white_24dp));
             fab.show();
         } else if (currentFragment instanceof NewClientFragment) {
             super.onBackPressed();
@@ -115,6 +135,17 @@ public class MainViewActivity extends AppCompatActivity
             if (currentFragment instanceof ViewClientsFragment) {
                 ((ViewClientsFragment) currentFragment).getClientsData();
             }
+
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_white_24dp));
+            fab.show();
+        } else if (currentFragment instanceof EditClientFragment) {
+            super.onBackPressed();
+            fab.show();
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_black_24dp));
+        } else if (currentFragment instanceof EditVehicleFragment) {
+            super.onBackPressed();
+            fab.show();
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_black_24dp));
         } else {
             super.onBackPressed();
         }
@@ -172,6 +203,18 @@ public class MainViewActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+
+        if (fragment instanceof VehicleDetailsFragment
+                || fragment instanceof ClientDetailsFragment) {
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_black_24dp));
+        } else {
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_white_24dp));
+        }
     }
 
     @Override

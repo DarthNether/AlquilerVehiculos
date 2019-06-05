@@ -27,6 +27,7 @@ import com.example.alquilervehiculos.R;
 import com.example.alquilervehiculos.Views.VehiclesAdapter;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,12 +38,10 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class ViewVehiclesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -71,7 +70,7 @@ public class ViewVehiclesFragment extends Fragment {
             new GetVehiclesTask().execute();
             recentlyDeleted = vehicleDTO.getId();
 
-            Snackbar snackbar = Snackbar.make(getView(), R.string.snackbar_deleted_vehicle, Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), R.string.snackbar_deleted_vehicle, Snackbar.LENGTH_LONG);
             snackbar.setAction(R.string.snackbar_undo, v -> undoDelete());
             snackbar.show();
         }
