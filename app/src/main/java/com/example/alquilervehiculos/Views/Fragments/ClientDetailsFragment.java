@@ -2,13 +2,18 @@ package com.example.alquilervehiculos.Views.Fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.alquilervehiculos.DAO.ClientDAO;
+import com.example.alquilervehiculos.DTO.ClientDTO;
 import com.example.alquilervehiculos.R;
 import com.example.alquilervehiculos.Views.MainViewActivity;
 
@@ -23,12 +28,17 @@ import com.example.alquilervehiculos.Views.MainViewActivity;
 public class ClientDetailsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_ID = "id";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String id;
+
+    TextView txtClient;
+    TextView txtId;
+    TextView txtEmail;
+    TextView txtPhone;
+
+    ClientDAO dao;
 
     private OnFragmentInteractionListener mListener;
 
@@ -40,16 +50,14 @@ public class ClientDetailsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param id Parameter 1.
      * @return A new instance of fragment ClientDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ClientDetailsFragment newInstance(String param1, String param2) {
+    public static ClientDetailsFragment newInstance(String id) {
         ClientDetailsFragment fragment = new ClientDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_ID, id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,8 +66,7 @@ public class ClientDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            id = getArguments().getString(ARG_ID);
         }
     }
 
@@ -71,11 +78,16 @@ public class ClientDetailsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_client_details, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        txtEmail = view.findViewById(R.id.txt_email);
+        txtId = view.findViewById(R.id.txt_id);
+        txtPhone = view.findViewById(R.id.txt_phone);
+        txtClient = view.findViewById(R.id.txt_client);
+
+        dao = new ClientDAO(getContext());
+
+        new GetClient().execute(id);
     }
 
     @Override
@@ -109,5 +121,23 @@ public class ClientDetailsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class GetClient extends AsyncTask<String, Void, ClientDTO> {
+
+        @Override
+        protected ClientDTO doInBackground(String... strings) {
+            return dao.getClient(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(ClientDTO clientDTO) {
+            String name = clientDTO.getName() + " " + clientDTO.getMiddleName().charAt(0) + ". " + clientDTO.getSurname();
+
+            txtClient.setText(name);
+            txtEmail.setText(clientDTO.getEmail());
+            txtPhone.setText(clientDTO.getPhoneNumber());
+            txtId.setText(clientDTO.getPersonalId());
+        }
     }
 }

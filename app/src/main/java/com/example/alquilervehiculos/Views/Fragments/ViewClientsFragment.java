@@ -57,65 +57,7 @@ public class ViewClientsFragment extends Fragment {
     private Drawable icon;
     private ColorDrawable background;
 
-    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-
-
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-            int position = viewHolder.getAdapterPosition();
-            RecyclerClientDTO clientDTO = adapter.getDtos().get(position);
-            new RemoveClientTask().execute(clientDTO.getId());
-            new GetClientsTask().execute();
-            recentlyDeleted = clientDTO.getId();
-
-            Snackbar snackbar = Snackbar.make(getView(), R.string.snackbar_deleted_client, Snackbar.LENGTH_LONG);
-            snackbar.setAction(R.string.snackbar_undo, v -> undoDelete());
-            snackbar.show();
-        }
-
-        private void undoDelete() {
-            new RestoreClientTask().execute(recentlyDeleted);
-            new GetClientsTask().execute();
-        }
-
-        @Override
-        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            View itemView = viewHolder.itemView;
-            int backgroundCornerOffset = 20;
-
-            if (dX < 0) { // Swiping to the left
-                background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
-                        itemView.getTop(), itemView.getRight(), itemView.getBottom());
-            } else { // view is unSwiped
-                background.setBounds(0, 0, 0, 0);
-            }
-            background.draw(c);
-
-            int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
-            int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
-            int iconBottom = iconTop + icon.getIntrinsicHeight();
-
-            if (dX < 0) { // Swiping to the left
-                int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
-                int iconRight = itemView.getRight() - iconMargin;
-                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
-
-                background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
-                        itemView.getTop(), itemView.getRight(), itemView.getBottom());
-            } else { // view is unSwiped
-                background.setBounds(0, 0, 0, 0);
-            }
-
-            background.draw(c);
-            icon.draw(c);
-        }
-    };
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback;
 
     public ViewClientsFragment() {
         // Required empty public constructor
@@ -167,6 +109,7 @@ public class ViewClientsFragment extends Fragment {
 
         recyclerClients.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        this.configureItemTocuhHelper();
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerClients);
 
         ((MainViewActivity) getActivity()).changeFABIcon(R.drawable.ic_add_white_24dp);
@@ -176,6 +119,68 @@ public class ViewClientsFragment extends Fragment {
         return view;
     }
 
+    private void configureItemTocuhHelper() {
+        itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                int position = viewHolder.getAdapterPosition();
+                RecyclerClientDTO clientDTO = adapter.getDtos().get(position);
+                new RemoveClientTask().execute(clientDTO.getId());
+                new GetClientsTask().execute();
+                recentlyDeleted = clientDTO.getId();
+
+                Snackbar snackbar = Snackbar.make(getView(), R.string.snackbar_deleted_client, Snackbar.LENGTH_LONG);
+                snackbar.setAction(R.string.snackbar_undo, v -> undoDelete());
+                snackbar.show();
+            }
+
+            private void undoDelete() {
+                new RestoreClientTask().execute(recentlyDeleted);
+                new GetClientsTask().execute();
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                View itemView = viewHolder.itemView;
+                int backgroundCornerOffset = 20;
+
+                if (dX < 0) { // Swiping to the left
+                    background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
+                            itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                } else { // view is unSwiped
+                    background.setBounds(0, 0, 0, 0);
+                }
+                background.draw(c);
+
+                int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                int iconBottom = iconTop + icon.getIntrinsicHeight();
+
+                if (dX < 0) { // Swiping to the left
+                    int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
+                    int iconRight = itemView.getRight() - iconMargin;
+                    icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+                    background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
+                            itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                } else { // view is unSwiped
+                    background.setBounds(0, 0, 0, 0);
+                }
+
+                background.draw(c);
+                icon.draw(c);
+            }
+        };
+    }
+
     private void configureOnClickRecyclerView() {
         ItemClickSupport.addTo(recyclerClients, R.layout.fragment_view_clients)
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
@@ -183,7 +188,7 @@ public class ViewClientsFragment extends Fragment {
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         RecyclerClientDTO clientDTO = adapter.getClient(position);
                         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.dynamic_fragment_layout, new ClientDetailsFragment());
+                        transaction.replace(R.id.dynamic_fragment_layout, ClientDetailsFragment.newInstance(clientDTO.getId()));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
