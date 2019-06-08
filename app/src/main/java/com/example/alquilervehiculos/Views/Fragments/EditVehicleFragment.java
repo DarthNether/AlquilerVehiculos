@@ -115,6 +115,7 @@ public class EditVehicleFragment extends Fragment {
             new UpdateVehicleTask().execute(data);
         }
 
+        Objects.requireNonNull(this.getActivity()).onBackPressed();
     }
 
     public void onCancelButtonPressed() {

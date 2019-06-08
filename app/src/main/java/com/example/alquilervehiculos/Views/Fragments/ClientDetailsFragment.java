@@ -28,10 +28,10 @@ import com.example.alquilervehiculos.Views.MainViewActivity;
 public class ClientDetailsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_ID = "id";
+    private static final String ARG_ID = "entryId";
 
     // TODO: Rename and change types of parameters
-    private String id;
+    private String entryId;
 
     TextView txtClient;
     TextView txtId;
@@ -66,7 +66,7 @@ public class ClientDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            id = getArguments().getString(ARG_ID);
+            entryId = getArguments().getString(ARG_ID);
         }
     }
 
@@ -87,7 +87,11 @@ public class ClientDetailsFragment extends Fragment {
 
         dao = new ClientDAO(getContext());
 
-        new GetClient().execute(id);
+        new GetClient().execute(entryId);
+    }
+
+    public String getEntryId() {
+        return entryId;
     }
 
     @Override

@@ -96,15 +96,17 @@ public class MainViewActivity extends AppCompatActivity
 
             fab.hide();
         } else if (currentFragment instanceof VehicleDetailsFragment) {
+            String id = ((VehicleDetailsFragment) currentFragment).getEntryId();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.dynamic_fragment_layout, new EditVehicleFragment(), "FRAGMENT_EDIT_VEHICLE");
+            fragmentTransaction.replace(R.id.dynamic_fragment_layout, EditVehicleFragment.newInstance(id), "FRAGMENT_EDIT_VEHICLE");
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
 
             fab.hide();
         } else if (currentFragment instanceof ClientDetailsFragment) {
+            String id = ((ClientDetailsFragment) currentFragment).getEntryId();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.dynamic_fragment_layout, new EditClientFragment(), "FRAGMENT_EDIT_CLIENT");
+            fragmentTransaction.replace(R.id.dynamic_fragment_layout, EditClientFragment.newInstance(id), "FRAGMENT_EDIT_CLIENT");
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
 

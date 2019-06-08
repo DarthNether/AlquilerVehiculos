@@ -129,6 +129,8 @@ public class EditClientFragment extends Fragment {
 
             new UpdateClient().execute(data);
         }
+
+        Objects.requireNonNull(this.getActivity()).onBackPressed();
     }
 
     public void onCancelButtonPressed() {

@@ -32,9 +32,9 @@ import com.google.android.gms.maps.MapView;
 public class VehicleDetailsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_ID = "id";
+    private static final String ARG_ID = "entryId";
 
-    private String id;
+    private String entryId;
 
     TextView txtEnrollment;
     TextView txtBrand;
@@ -72,7 +72,7 @@ public class VehicleDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            id = getArguments().getString(ARG_ID);
+            entryId = getArguments().getString(ARG_ID);
         }
     }
 
@@ -96,7 +96,7 @@ public class VehicleDetailsFragment extends Fragment {
         dao = new VehicleDAO(view.getContext());
 
         getVehicleTask = new GetVehicleTask();
-        getVehicleTask.execute(id);
+        getVehicleTask.execute(entryId);
 
         bindEvents();
     }
@@ -108,15 +108,19 @@ public class VehicleDetailsFragment extends Fragment {
     public void onRentPress() {
         if (btnRent.getText().toString().equals("RENT")) {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.dynamic_fragment_layout, RentFragment.newInstance(id));
+            transaction.replace(R.id.dynamic_fragment_layout, RentFragment.newInstance(entryId));
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (btnRent.getText().toString().equals("RETURN")) {
-            new ReturnVehicle().execute(id);
-            new GetVehicleTask().execute(id);
+            new ReturnVehicle().execute(entryId);
+            new GetVehicleTask().execute(entryId);
 
             Toast.makeText(getContext(), "Vehicle successfully returned.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public String getEntryId() {
+        return entryId;
     }
 
     @Override
