@@ -10,14 +10,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.Spinner;
 
-import com.example.alquilervehiculos.DAO.ClientDAO;
 import com.example.alquilervehiculos.DAO.VehicleDAO;
-import com.example.alquilervehiculos.DTO.SpinnerClientDTO;
 import com.example.alquilervehiculos.R;
 
 import java.text.SimpleDateFormat;
@@ -28,27 +24,27 @@ import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RentFragment.OnFragmentInteractionListener} interface
+ * {@link ReturnVehicleFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RentFragment#newInstance} factory method to
+ * Use the {@link ReturnVehicleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RentFragment extends Fragment {
+public class ReturnVehicleFragment extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ID = "id";
 
+    // TODO: Rename and change types of parameters
     private String id;
     private VehicleDAO vehicleDAO;
-    ArrayAdapter<SpinnerClientDTO> spinnerArrayAdapter;
 
-    Spinner clientSpinner;
-    CalendarView rentCalendar;
-    Button btnRent;
+    Button btnReturn;
     Button btnCancel;
+    CalendarView calendar;
 
     private OnFragmentInteractionListener mListener;
 
-    public RentFragment() {
+    public ReturnVehicleFragment() {
         // Required empty public constructor
     }
 
@@ -57,11 +53,10 @@ public class RentFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param id Parameter 1.
-     * @return A new instance of fragment RentFragment.
+     * @return A new instance of fragment ReturnVehicleFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static RentFragment newInstance(String id) {
-        RentFragment fragment = new RentFragment();
+    public static ReturnVehicleFragment newInstance(String id) {
+        ReturnVehicleFragment fragment = new ReturnVehicleFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ID, id);
         fragment.setArguments(args);
@@ -77,43 +72,33 @@ public class RentFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_rent, container, false);
+        return inflater.inflate(R.layout.fragment_return_vehicle, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        vehicleDAO = new VehicleDAO(view.getContext());
-        ClientDAO clientDAO = new ClientDAO(view.getContext());
-
-        btnRent = view.findViewById(R.id.btn_return);
         btnCancel = view.findViewById(R.id.btn_cancel);
+        btnReturn = view.findViewById(R.id.btn_return);
+        calendar = view.findViewById(R.id.calendar_return_date);
 
-        rentCalendar = view.findViewById(R.id.calendar_return_date);
-        clientSpinner = view.findViewById(R.id.spinner_clients);
+        vehicleDAO = new VehicleDAO(view.getContext());
 
         bindEvents();
-
-        spinnerArrayAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_dropdown_item, clientDAO.getSpinnerClients());
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerArrayAdapter.notifyDataSetChanged();
-
-        clientSpinner.setAdapter(spinnerArrayAdapter);
     }
-
 
     public void bindEvents() {
+        btnReturn.setOnClickListener((View v) -> onReturnButtonPressed());
         btnCancel.setOnClickListener((View v) -> onCancelButtonPressed());
-        btnRent.setOnClickListener((View v) -> onRentButtonPressed());
     }
 
-    public void onRentButtonPressed() {
+    public void onReturnButtonPressed() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String date = dateFormat.format(new Date(rentCalendar.getDate()));
+        String date = dateFormat.format(new Date(calendar.getDate()));
 
-        new RentVehicleTask().execute(this.id, ((SpinnerClientDTO)clientSpinner.getSelectedItem()).getId(), date);
+        new ReturnVehicle().execute(id, date);
         Objects.requireNonNull(this.getActivity()).onBackPressed();
     }
 
@@ -153,10 +138,11 @@ public class RentFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private class RentVehicleTask extends AsyncTask<String, Void, Void> {
+    private class ReturnVehicle extends AsyncTask<String, Void, Void> {
+
         @Override
         protected Void doInBackground(String... strings) {
-            vehicleDAO.rentVehicle(strings[0], strings[1], strings[2]);
+            vehicleDAO.returnVehicle(strings[0], strings[1]);
             return null;
         }
     }

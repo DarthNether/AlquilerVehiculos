@@ -100,10 +100,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_RENTS = "CREATE TABLE "
             + TABLE_RENTS + " ("
             + KEY_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_CLIENT_ID + " INTEGER, "
-            + COLUMN_VEHICLE_ID + " INTEGER, "
+            + COLUMN_CLIENT_ID + " INTEGER NOT NULL, "
+            + COLUMN_VEHICLE_ID + " INTEGER NOT NULL, "
             + COLUMN_RENT_DATE + " DATETIME, "
-            + COLUMN_RETURN_DATE + " DATETIME "
+            + COLUMN_RETURN_DATE + " DATETIME, "
+            + "FOREIGN KEY (" + COLUMN_CLIENT_ID + ") REFERENCES " + TABLE_CLIENTS + " (" + KEY_ID + "), "
+            + "FOREIGN KEY (" + COLUMN_VEHICLE_ID + ") REFERENCES " + TABLE_VEHICLES + " (" + KEY_ID + ") "
             + ")";
 
     private static DatabaseHelper instance;

@@ -15,6 +15,7 @@
     <string name="email">Email</string>
     <string name="client_spinner">Client</string>
     <string name="rent_date">Rent Date</string>
+    <string name="return_date">Return Date</string>
 
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>

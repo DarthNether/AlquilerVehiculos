@@ -85,7 +85,7 @@ public class VehicleDetailsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        btnRent = view.findViewById(R.id.btn_rent);
+        btnRent = view.findViewById(R.id.btn_return);
         txtBrand = view.findViewById(R.id.txt_brand);
         txtEnrollment = view.findViewById(R.id.txt_enrollment);
         txtPrice = view.findViewById(R.id.txt_price);
@@ -111,7 +111,10 @@ public class VehicleDetailsFragment extends Fragment {
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (btnRent.getText().toString().equals("RETURN")) {
-
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.dynamic_fragment_layout, ReturnVehicleFragment.newInstance(id));
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
     }
 

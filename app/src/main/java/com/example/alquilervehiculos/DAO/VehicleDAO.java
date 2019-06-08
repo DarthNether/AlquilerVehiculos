@@ -21,6 +21,7 @@ import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_MODEL;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_PRICE_PER_DAY;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_RENTED;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_RENT_DATE;
+import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_RETURN_DATE;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_STATUS;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.COLUMN_VEHICLE_ID;
 import static com.example.alquilervehiculos.DDBB.DatabaseHelper.KEY_ID;
@@ -161,5 +162,25 @@ public class VehicleDAO {
         String[] args = {vehicleId};
 
         database.update(TABLE_VEHICLES, vehicleValues, clause, args);
+    }
+
+    public void returnVehicle(String vehicleId, String date) {
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        ContentValues vehicleValues = new ContentValues();
+        vehicleValues.put(COLUMN_RENTED, "0");
+
+        String vehicleClause = KEY_ID + " =? ";
+        String[] vehicleArgs = {vehicleId};
+
+        database.update(TABLE_VEHICLES, vehicleValues, vehicleClause, vehicleArgs);
+
+        ContentValues rentValues = new ContentValues();
+        rentValues.put(COLUMN_RETURN_DATE, date);
+
+        String rentClause = COLUMN_VEHICLE_ID + " =? AND " + COLUMN_RETURN_DATE + " =? ";
+        String[] rentArgs = {vehicleId, "IS NULL"};
+
+        database.update(TABLE_RENTS, rentValues, rentClause, rentArgs);
     }
 }

@@ -75,7 +75,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/txt_price" />
 
             <Button
-                android:id="@+id/btn_rent"
+                android:id="@+id/btn_return"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
