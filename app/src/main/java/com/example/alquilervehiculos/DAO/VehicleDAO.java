@@ -164,7 +164,7 @@ public class VehicleDAO {
         database.update(TABLE_VEHICLES, vehicleValues, clause, args);
     }
 
-    public void returnVehicle(String vehicleId, String date) {
+    public void returnVehicle(String vehicleId) {
         SQLiteDatabase database = helper.getWritableDatabase();
 
         ContentValues vehicleValues = new ContentValues();
@@ -176,7 +176,7 @@ public class VehicleDAO {
         database.update(TABLE_VEHICLES, vehicleValues, vehicleClause, vehicleArgs);
 
         ContentValues rentValues = new ContentValues();
-        rentValues.put(COLUMN_RETURN_DATE, date);
+        rentValues.put(COLUMN_RETURN_DATE, DateUtils.getDateTime());
 
         String rentClause = COLUMN_VEHICLE_ID + " =? AND " + COLUMN_RETURN_DATE + " =? ";
         String[] rentArgs = {vehicleId, "IS NULL"};

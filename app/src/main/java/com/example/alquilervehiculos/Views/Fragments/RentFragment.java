@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.alquilervehiculos.DAO.ClientDAO;
 import com.example.alquilervehiculos.DAO.VehicleDAO;
@@ -114,6 +115,9 @@ public class RentFragment extends Fragment {
         String date = dateFormat.format(new Date(rentCalendar.getDate()));
 
         new RentVehicleTask().execute(this.id, ((SpinnerClientDTO)clientSpinner.getSelectedItem()).getId(), date);
+
+        Toast.makeText(getContext(), "Vehicle successfully rented.", Toast.LENGTH_SHORT).show();
+
         Objects.requireNonNull(this.getActivity()).onBackPressed();
     }
 

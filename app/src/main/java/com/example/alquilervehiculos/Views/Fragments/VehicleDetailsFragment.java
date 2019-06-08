@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.alquilervehiculos.DAO.VehicleDAO;
 import com.example.alquilervehiculos.DTO.VehicleDTO;
@@ -111,10 +112,10 @@ public class VehicleDetailsFragment extends Fragment {
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (btnRent.getText().toString().equals("RETURN")) {
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.dynamic_fragment_layout, ReturnVehicleFragment.newInstance(id));
-            transaction.addToBackStack(null);
-            transaction.commit();
+            new ReturnVehicle().execute(id);
+            new GetVehicleTask().execute(id);
+
+            Toast.makeText(getContext(), "Vehicle successfully returned.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -171,6 +172,15 @@ public class VehicleDetailsFragment extends Fragment {
             } else {
                 btnRent.setText(R.string.return_vehicle);
             }
+        }
+    }
+
+    private class ReturnVehicle extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            dao.returnVehicle(strings[0]);
+            return null;
         }
     }
 }

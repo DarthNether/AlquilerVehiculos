@@ -25,7 +25,6 @@ import com.example.alquilervehiculos.Views.Fragments.EditVehicleFragment;
 import com.example.alquilervehiculos.Views.Fragments.NewClientFragment;
 import com.example.alquilervehiculos.Views.Fragments.NewVehicleFragment;
 import com.example.alquilervehiculos.Views.Fragments.RentFragment;
-import com.example.alquilervehiculos.Views.Fragments.ReturnVehicleFragment;
 import com.example.alquilervehiculos.Views.Fragments.VehicleDetailsFragment;
 import com.example.alquilervehiculos.Views.Fragments.ViewClientsFragment;
 import com.example.alquilervehiculos.Views.Fragments.ViewVehiclesFragment;
@@ -42,8 +41,7 @@ public class MainViewActivity extends AppCompatActivity
         VehicleDetailsFragment.OnFragmentInteractionListener,
         EditVehicleFragment.OnFragmentInteractionListener,
         EditClientFragment.OnFragmentInteractionListener,
-        RentFragment.OnFragmentInteractionListener,
-        ReturnVehicleFragment.OnFragmentInteractionListener {
+        RentFragment.OnFragmentInteractionListener {
 
     public FragmentManager fragmentManager;
 
