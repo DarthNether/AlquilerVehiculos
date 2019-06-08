@@ -2,6 +2,7 @@ package com.example.alquilervehiculos.Views;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -23,6 +24,7 @@ import com.example.alquilervehiculos.Views.Fragments.EditClientFragment;
 import com.example.alquilervehiculos.Views.Fragments.EditVehicleFragment;
 import com.example.alquilervehiculos.Views.Fragments.NewClientFragment;
 import com.example.alquilervehiculos.Views.Fragments.NewVehicleFragment;
+import com.example.alquilervehiculos.Views.Fragments.RentFragment;
 import com.example.alquilervehiculos.Views.Fragments.VehicleDetailsFragment;
 import com.example.alquilervehiculos.Views.Fragments.ViewClientsFragment;
 import com.example.alquilervehiculos.Views.Fragments.ViewVehiclesFragment;
@@ -38,12 +40,12 @@ public class MainViewActivity extends AppCompatActivity
         ClientDetailsFragment.OnFragmentInteractionListener,
         VehicleDetailsFragment.OnFragmentInteractionListener,
         EditVehicleFragment.OnFragmentInteractionListener,
-        EditClientFragment.OnFragmentInteractionListener {
+        EditClientFragment.OnFragmentInteractionListener,
+        RentFragment.OnFragmentInteractionListener {
 
     public FragmentManager fragmentManager;
 
     NavigationView navigationView;
-    DrawerLayout drawer;
 
     FloatingActionButton fab;
 
@@ -55,6 +57,7 @@ public class MainViewActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         fab = findViewById(R.id.fab);
+        this.changeFABIcon(R.drawable.ic_add_white_24dp);
         fab.setOnClickListener((View v) -> onFabClick());
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -111,7 +114,7 @@ public class MainViewActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         Fragment currentFragment = this.fragmentManager.findFragmentById(R.id.dynamic_fragment_layout);
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -125,7 +128,6 @@ public class MainViewActivity extends AppCompatActivity
                 ((ViewVehiclesFragment) currentFragment).getVehiclesData();
             }
 
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_white_24dp));
             fab.show();
         } else if (currentFragment instanceof NewClientFragment) {
             super.onBackPressed();
@@ -136,18 +138,10 @@ public class MainViewActivity extends AppCompatActivity
                 ((ViewClientsFragment) currentFragment).getClientsData();
             }
 
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_white_24dp));
             fab.show();
-        } else if (currentFragment instanceof EditClientFragment) {
-            super.onBackPressed();
-            fab.show();
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_black_24dp));
-        } else if (currentFragment instanceof EditVehicleFragment) {
-            super.onBackPressed();
-            fab.show();
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_black_24dp));
         } else {
             super.onBackPressed();
+            fab.show();
         }
     }
 
@@ -187,6 +181,7 @@ public class MainViewActivity extends AppCompatActivity
                 fragmentTransaction.commit();
 
                 Objects.requireNonNull(getSupportActionBar()).setTitle("Vehicles");
+                fab.show();
             }
         } else if (id == R.id.nav_clients) {
             if (!(currentFragment instanceof ViewClientsFragment)) {
@@ -195,6 +190,7 @@ public class MainViewActivity extends AppCompatActivity
                 fragmentTransaction.commit();
 
                 Objects.requireNonNull(getSupportActionBar()).setTitle("Clients");
+                fab.show();
             }
         } else if (id == R.id.nav_settings) {
 
@@ -205,16 +201,8 @@ public class MainViewActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        super.onAttachFragment(fragment);
-
-        if (fragment instanceof VehicleDetailsFragment
-                || fragment instanceof ClientDetailsFragment) {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_black_24dp));
-        } else {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_white_24dp));
-        }
+    public void changeFABIcon(@DrawableRes int resource) {
+        fab.setImageResource(resource);
     }
 
     @Override

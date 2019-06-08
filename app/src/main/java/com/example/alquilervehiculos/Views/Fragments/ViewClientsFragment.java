@@ -24,7 +24,8 @@ import com.example.alquilervehiculos.Classes.Utils.ItemClickSupport;
 import com.example.alquilervehiculos.DAO.ClientDAO;
 import com.example.alquilervehiculos.DTO.RecyclerClientDTO;
 import com.example.alquilervehiculos.R;
-import com.example.alquilervehiculos.Views.ClientsAdapter;
+import com.example.alquilervehiculos.Views.Adapters.ClientsAdapter;
+import com.example.alquilervehiculos.Views.MainViewActivity;
 
 import java.util.List;
 
@@ -167,6 +168,8 @@ public class ViewClientsFragment extends Fragment {
         recyclerClients.setLayoutManager(new LinearLayoutManager(getContext()));
 
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerClients);
+
+        ((MainViewActivity) getActivity()).changeFABIcon(R.drawable.ic_add_white_24dp);
 
         this.configureOnClickRecyclerView();
 

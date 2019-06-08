@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.alquilervehiculos.Classes.Utils.DateUtils;
 import com.example.alquilervehiculos.DDBB.DatabaseHelper;
 import com.example.alquilervehiculos.DTO.RecyclerClientDTO;
+import com.example.alquilervehiculos.DTO.SpinnerClientDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,36 @@ public class ClientDAO {
                 dto.setMiddleName(c.getString(c.getColumnIndex(COLUMN_MIDDLE_NAME)));
                 dto.setSurname(c.getString(c.getColumnIndex(COLUMN_SURNAME)));
                 dto.setPersonalId(c.getString(c.getColumnIndex(COLUMN_PERSONAL_ID)));
+
+                dtos.add(dto);
+
+                c.moveToNext();
+            }
+        }
+
+        c.close();
+
+        return dtos;
+    }
+
+    public ArrayList<SpinnerClientDTO> getSpinnerClients() {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String[] columns = {KEY_ID, COLUMN_NAME, COLUMN_MIDDLE_NAME, COLUMN_SURNAME, COLUMN_PERSONAL_ID};
+        String selection = COLUMN_STATUS + " = ?";
+        String[] selectionArgs = {"0"};
+        String sortOrder = COLUMN_SURNAME + " ASC";
+
+        Cursor c = db.query(TABLE_CLIENTS, columns, selection, selectionArgs, null, null, sortOrder);
+        ArrayList<SpinnerClientDTO> dtos = new ArrayList<>();
+
+        if (c.moveToFirst()) {
+            while (!c.isAfterLast()) {
+                SpinnerClientDTO dto = new SpinnerClientDTO();
+
+                dto.setId(c.getString(c.getColumnIndex(KEY_ID)));
+                dto.setName(c.getString(c.getColumnIndex(COLUMN_NAME)));
+                dto.setMiddleName(c.getString(c.getColumnIndex(COLUMN_MIDDLE_NAME)));
+                dto.setSurname(c.getString(c.getColumnIndex(COLUMN_SURNAME)));
 
                 dtos.add(dto);
 

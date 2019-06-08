@@ -3,12 +3,14 @@ package com.example.alquilervehiculos.Views.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.alquilervehiculos.R;
+import com.example.alquilervehiculos.Views.MainViewActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,9 +64,10 @@ public class ClientDetailsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        ((MainViewActivity) getActivity()).changeFABIcon(R.drawable.ic_edit_black_24dp);
         return inflater.inflate(R.layout.fragment_client_details, container, false);
     }
 
@@ -90,6 +93,7 @@ public class ClientDetailsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        ((MainViewActivity) getActivity()).changeFABIcon(R.drawable.ic_add_white_24dp);
     }
 
     /**

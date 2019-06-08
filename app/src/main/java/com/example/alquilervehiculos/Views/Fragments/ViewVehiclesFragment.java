@@ -24,7 +24,7 @@ import com.example.alquilervehiculos.Classes.Utils.ItemClickSupport;
 import com.example.alquilervehiculos.DAO.VehicleDAO;
 import com.example.alquilervehiculos.DTO.RecyclerVehicleDTO;
 import com.example.alquilervehiculos.R;
-import com.example.alquilervehiculos.Views.VehiclesAdapter;
+import com.example.alquilervehiculos.Views.Adapters.VehiclesAdapter;
 
 import java.util.List;
 import java.util.Objects;
@@ -51,71 +51,13 @@ public class ViewVehiclesFragment extends Fragment {
     VehiclesAdapter adapter;
     String recentlyDeleted;
 
+    VehicleDAO dao;
+    GetVehiclesTask task;
+
     private Drawable icon;
     private ColorDrawable background;
 
-    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-
-
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-            int position = viewHolder.getAdapterPosition();
-            RecyclerVehicleDTO vehicleDTO = adapter.getDtos().get(position);
-            new RemoveVehicleTask().execute(vehicleDTO.getId());
-            new GetVehiclesTask().execute();
-            recentlyDeleted = vehicleDTO.getId();
-
-            Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), R.string.snackbar_deleted_vehicle, Snackbar.LENGTH_LONG);
-            snackbar.setAction(R.string.snackbar_undo, v -> undoDelete());
-            snackbar.show();
-        }
-
-        private void undoDelete() {
-            new RestoreVehicleTask().execute(recentlyDeleted);
-            new GetVehiclesTask().execute();
-        }
-
-        @Override
-        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            View itemView = viewHolder.itemView;
-            int backgroundCornerOffset = 20;
-
-            if (dX < 0) { // Swiping to the left
-                background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
-                        itemView.getTop(), itemView.getRight(), itemView.getBottom());
-            } else { // view is unSwiped
-                background.setBounds(0, 0, 0, 0);
-            }
-            background.draw(c);
-
-            int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
-            int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
-            int iconBottom = iconTop + icon.getIntrinsicHeight();
-
-            if (dX < 0) { // Swiping to the left
-                int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
-                int iconRight = itemView.getRight() - iconMargin;
-                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
-
-                background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
-                        itemView.getTop(), itemView.getRight(), itemView.getBottom());
-            } else { // view is unSwiped
-                background.setBounds(0, 0, 0, 0);
-            }
-
-            background.draw(c);
-            icon.draw(c);
-        }
-    };
-
-    VehicleDAO dao;
-    GetVehiclesTask task;
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback;
 
     public ViewVehiclesFragment() {
         // Required empty public constructor
@@ -168,6 +110,7 @@ public class ViewVehiclesFragment extends Fragment {
 
         recyclerVehicles.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        configureTouchHelper();
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerVehicles);
 
         this.configureOnClickRecyclerView();
@@ -180,11 +123,75 @@ public class ViewVehiclesFragment extends Fragment {
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     RecyclerVehicleDTO vehicleDTO = adapter.getVehicle(position);
 
+                    VehicleDetailsFragment vehicleDetailsFragment = VehicleDetailsFragment.newInstance(vehicleDTO.getId());
+
                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.dynamic_fragment_layout, new VehicleDetailsFragment());
+                    transaction.replace(R.id.dynamic_fragment_layout, vehicleDetailsFragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
                 });
+    }
+
+    private void configureTouchHelper() {
+        itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                int position = viewHolder.getAdapterPosition();
+                RecyclerVehicleDTO vehicleDTO = adapter.getDtos().get(position);
+                new RemoveVehicleTask().execute(vehicleDTO.getId());
+                new GetVehiclesTask().execute();
+                recentlyDeleted = vehicleDTO.getId();
+
+                Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), R.string.snackbar_deleted_vehicle, Snackbar.LENGTH_LONG);
+                snackbar.setAction(R.string.snackbar_undo, v -> undoDelete());
+                snackbar.show();
+            }
+
+            private void undoDelete() {
+                new RestoreVehicleTask().execute(recentlyDeleted);
+                new GetVehiclesTask().execute();
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                View itemView = viewHolder.itemView;
+                int backgroundCornerOffset = 20;
+
+                if (dX < 0) { // Swiping to the left
+                    background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
+                            itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                } else { // view is unSwiped
+                    background.setBounds(0, 0, 0, 0);
+                }
+                background.draw(c);
+
+                int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                int iconBottom = iconTop + icon.getIntrinsicHeight();
+
+                if (dX < 0) { // Swiping to the left
+                    int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
+                    int iconRight = itemView.getRight() - iconMargin;
+                    icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+                    background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
+                            itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                } else { // view is unSwiped
+                    background.setBounds(0, 0, 0, 0);
+                }
+
+                background.draw(c);
+                icon.draw(c);
+            }
+        };
     }
 
     @Override
@@ -216,7 +223,7 @@ public class ViewVehiclesFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+
         void onFragmentInteraction(Uri uri);
     }
 

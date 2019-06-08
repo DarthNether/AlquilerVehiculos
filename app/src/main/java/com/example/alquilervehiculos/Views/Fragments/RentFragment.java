@@ -7,48 +7,50 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.CalendarView;
+import android.widget.Spinner;
 
+import com.example.alquilervehiculos.DAO.ClientDAO;
 import com.example.alquilervehiculos.DAO.VehicleDAO;
-import com.example.alquilervehiculos.DTO.VehicleDTO;
+import com.example.alquilervehiculos.DTO.SpinnerClientDTO;
 import com.example.alquilervehiculos.R;
-import com.example.alquilervehiculos.Views.MainViewActivity;
-import com.google.android.gms.maps.MapView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link VehicleDetailsFragment.OnFragmentInteractionListener} interface
+ * {@link RentFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link VehicleDetailsFragment#newInstance} factory method to
+ * Use the {@link RentFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VehicleDetailsFragment extends Fragment {
+public class RentFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ID = "id";
 
     private String id;
+    private VehicleDAO vehicleDAO;
+    private ClientDAO clientDAO;
+    ArrayAdapter<SpinnerClientDTO> spinnerArrayAdapter;
 
-    TextView txtEnrollment;
-    TextView txtBrand;
-    TextView txtModel;
-    TextView txtPrice;
+    Spinner clientSpinner;
+    CalendarView rentCalendar;
     Button btnRent;
-    MapView mapVehicleLocation;
+    Button btnCancel;
 
     private OnFragmentInteractionListener mListener;
 
-    VehicleDAO dao;
-    GetVehicleTask getVehicleTask;
-
-
-    public VehicleDetailsFragment() {
+    public RentFragment() {
         // Required empty public constructor
     }
 
@@ -56,13 +58,14 @@ public class VehicleDetailsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment VehicleDetailsFragment.
+     * @param id Parameter 1.
+     * @return A new instance of fragment RentFragment.
      */
-    public static VehicleDetailsFragment newInstance(String param1) {
-        VehicleDetailsFragment fragment = new VehicleDetailsFragment();
+    // TODO: Rename and change types and number of parameters
+    public static RentFragment newInstance(String id) {
+        RentFragment fragment = new RentFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_ID, param1);
+        args.putString(ARG_ID, id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,40 +82,45 @@ public class VehicleDetailsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ((MainViewActivity) getActivity()).changeFABIcon(R.drawable.ic_edit_black_24dp);
-        return inflater.inflate(R.layout.fragment_vehicle_details, container, false);
+        return inflater.inflate(R.layout.fragment_rent, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        vehicleDAO = new VehicleDAO(view.getContext());
+        clientDAO = new ClientDAO(view.getContext());
+
         btnRent = view.findViewById(R.id.btn_rent);
-        txtBrand = view.findViewById(R.id.txt_brand);
-        txtEnrollment = view.findViewById(R.id.txt_enrollment);
-        txtPrice = view.findViewById(R.id.txt_price);
-        txtModel = view.findViewById(R.id.txt_model);
-        mapVehicleLocation = view.findViewById(R.id.map_vehicle_location);
+        btnCancel = view.findViewById(R.id.btn_cancel);
 
-        dao = new VehicleDAO(view.getContext());
-
-        getVehicleTask = new GetVehicleTask();
-        getVehicleTask.execute(id);
+        rentCalendar = view.findViewById(R.id.calendar_rent_date);
+        clientSpinner = view.findViewById(R.id.spinner_clients);
 
         bindEvents();
+
+        spinnerArrayAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_dropdown_item, clientDAO.getSpinnerClients());
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerArrayAdapter.notifyDataSetChanged();
+
+        clientSpinner.setAdapter(spinnerArrayAdapter);
     }
+
 
     public void bindEvents() {
-        btnRent.setOnClickListener((View v) -> onRentPress());
+        btnCancel.setOnClickListener((View v) -> onCancelButtonPressed());
+        btnRent.setOnClickListener((View v) -> onRentButtonPressed());
     }
 
-    public void onRentPress() {
-        if (btnRent.getText().toString().equals("RENT")) {
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.dynamic_fragment_layout, RentFragment.newInstance(id));
-            transaction.addToBackStack(null);
-            transaction.commit();
-        } else if (btnRent.getText().toString().equals("RETURN")) {
+    public void onRentButtonPressed() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String date = dateFormat.format(new Date(rentCalendar.getDate()));
 
-        }
+        new RentVehicleTask().execute(this.id, ((SpinnerClientDTO)clientSpinner.getSelectedItem()).getId(), date);
+        Objects.requireNonNull(this.getActivity()).onBackPressed();
+    }
+
+    public void onCancelButtonPressed() {
+        Objects.requireNonNull(this.getActivity()).onBackPressed();
     }
 
     @Override
@@ -130,7 +138,6 @@ public class VehicleDetailsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        ((MainViewActivity) getActivity()).changeFABIcon(R.drawable.ic_add_white_24dp);
     }
 
     /**
@@ -148,26 +155,11 @@ public class VehicleDetailsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private class GetVehicleTask extends AsyncTask<String, Void, VehicleDTO> {
-
+    private class RentVehicleTask extends AsyncTask<String, Void, Void> {
         @Override
-        protected VehicleDTO doInBackground(String... strings) {
-            return dao.getVehicle(strings[0]);
-        }
-
-        @Override
-        protected void onPostExecute(VehicleDTO dto) {
-            txtBrand.setText(dto.getBrand());
-            txtModel.setText(dto.getModel());
-            String price = dto.getPrice_day() + " €/day";
-            txtPrice.setText(price);
-            txtEnrollment.setText(dto.getEnrollment());
-
-            if (dto.getRented().equals("0")) {
-                btnRent.setText(R.string.rent_vehicle);
-            } else {
-                btnRent.setText(R.string.return_vehicle);
-            }
+        protected Void doInBackground(String... strings) {
+            vehicleDAO.rentVehicle(strings[0], strings[1], strings[2]);
+            return null;
         }
     }
 }
